@@ -15,7 +15,7 @@ class FileStorage:
         """
         if cls:
             filter_obj = {}
-            for key, obj in FileStorage.__objects.items():
+            for key, obj in self.__objects.items():
                 if obj.__class__ == cls:
                     filter_obj[key] = obj
             return filter_obj
@@ -30,8 +30,8 @@ class FileStorage:
         """Delete an  object from __objects if it is inside"""
         if obj:
             key = obj.__class__.__name__ + '.' + obj.id
-            if key in FileStorage.__objects:
-                del FileStorage.__objects[key]
+            if key in self.__objects:
+                del self.__objects[key]
 
     def save(self):
         """Saves storage dictionary to file"""
