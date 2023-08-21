@@ -13,13 +13,14 @@ class FileStorage:
         Returns a dictionary of models currently in storage
         filtered by class (optional)
         """
-        if cls is None:
-            return FileStorage.__objects
-        filter_obj = {}
-        for key, obj in FileStorage.__objects.items():
-            if obj.__class__ == cls or obj.__class__.__name__ == cls:
-                filter_obj[key] = obj
-        return filter_obj
+        if cls:
+            filter_obj = {}
+            for key, obj in FileStorage.__objects.items():
+                if obj.__class__ == cls:
+                    filter_obj[key] = obj
+            return filter_obj
+        else:
+            return self.__objects
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
@@ -27,7 +28,7 @@ class FileStorage:
 
     def delete(self, obj=None):
         """Delete an  object from __objects if it is inside"""
-        if obj is not None:
+        if obj:
             key = obj.__class__.__name__ + '.' + obj.id
             if key in FileStorage.__objects:
                 del FileStorage.__objects[key]
