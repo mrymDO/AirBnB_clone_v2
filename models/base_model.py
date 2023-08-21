@@ -17,9 +17,9 @@ class BaseModel:
             self.id = kwargs.get('id', str(uuid.uuid4()))
             self.created_at = kwargs.get('created_at', datetime.now())
             self.updated_at = kwargs.get('updated_at', datetime.now())
-            
+
             kwargs.pop('__class__', None)
-            
+
             self.__dict__.update(kwargs)
 
         storage.new(self)
