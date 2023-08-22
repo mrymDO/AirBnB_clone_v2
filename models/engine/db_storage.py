@@ -18,9 +18,12 @@ class DBStorage():
         pwd = getenv("HBNB_MYSQL_PWD")
         host = getenv("HBNB_MYSQL_HOST")
         db = getenv("HBNB_MYSQL_DB")
+        env = getenv("HBNB_ENV")
         con = "mysql+mysqldb://{}:{}@{}/{}".format(user, pwd, host, db)
         self.__engine = create_engine(con, pool_pre_ping=True)
         Base.metadata.create_all(self.__engine)
         Session = sessionmaker(bind=self.__engine)
         self.__session = Session()
+        if env == "test":
+            Base.metadata.drop_all(self.__engine)
     
