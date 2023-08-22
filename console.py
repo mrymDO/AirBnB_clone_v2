@@ -148,7 +148,6 @@ class HBNBCommand(cmd.Cmd):
         print(new_instance.id)
         storage.save()
 
-
     def help_create(self):
         """ Help information for the create method """
         print("Creates a class of any type")
@@ -210,7 +209,7 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         try:
-            del(storage.all()[key])
+            del (storage.all()[key])
             storage.save()
         except KeyError:
             print("** no instance found **")
@@ -236,7 +235,7 @@ class HBNBCommand(cmd.Cmd):
             for k, v in storage._FileStorage__objects.items():
                 print_list.append(v)
 
-        print('[%s]' % ", ".join(map(str,print_list)))
+        print('[%s]' % ", ".join(map(str, print_list)))
 
     def help_all(self):
         """ Help information for the all command """
