@@ -5,8 +5,22 @@
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models.base_model import Base
 from os import getenv
+
+from models.base_model import Base
+from models.user import User
+from models.place import Place
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
+
+classes = {
+           'User': User, 'Place': Place,
+           'State': State, 'City': City, 'Amenity': Amenity,
+           'Review': Review
+          }
+
 
 class DBStorage():
     """db storage class"""
@@ -27,3 +41,20 @@ class DBStorage():
         if env == "test":
             Base.metadata.drop_all(self.__engine)
     
+    def all(self, cls=None):
+        if cls:
+            data = self._getAll(cls)
+        else:
+            data = []
+            for classObj in classes:
+              data.append(self._getAll(classObj))
+        dictData = self._toDict(data)
+        return dictData
+    def _toDict(self, rows):
+        newDict = {}
+        for row in rows:
+            newDict[row["id"]] = row
+        return newDict;
+    def _getAll(self, cls):
+        data = self.__session.query(cls).all()
+        return data
