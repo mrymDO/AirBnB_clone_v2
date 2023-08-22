@@ -15,11 +15,7 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 
-classes = {
-           'User': User, 'Place': Place,
-           'State': State, 'City': City, 'Amenity': Amenity,
-           'Review': Review
-          }
+classes = [User, Place, State, City, Amenity, Review]
 
 
 class DBStorage():
@@ -53,7 +49,8 @@ class DBStorage():
     def _toDict(self, rows):
         newDict = {}
         for row in rows:
-            newDict[row["id"]] = row
+            key = "{}.{}".format(row.__class__.name,row.id)
+            newDict[key] = row
         return newDict;
     def _getAll(self, cls):
         data = self.__session.query(cls).all()
