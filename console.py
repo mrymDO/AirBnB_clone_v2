@@ -126,7 +126,8 @@ class HBNBCommand(cmd.Cmd):
             return
         param_dict = {
             "updated_at": datetime.now().isoformat(),
-            "created_at": datetime.now().isoformat()
+            "created_at": datetime.now().isoformat(),
+            "__class__": class_name
         }
 
         for param in args[1:]:
