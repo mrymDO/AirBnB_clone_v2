@@ -36,7 +36,6 @@ class HBNBCommand(cmd.Cmd):
         if not sys.__stdin__.isatty():
             print('(hbnb) ', end="")
 
-
     def precmd(self, line):
         """Reformat command line for advanced command syntax.
 
@@ -149,7 +148,6 @@ class HBNBCommand(cmd.Cmd):
         print(new_instance.id)
         storage.save()
 
-
     def help_create(self):
         """ Help information for the create method """
         print("Creates a class of any type")
@@ -237,7 +235,7 @@ class HBNBCommand(cmd.Cmd):
             for k, v in storage._FileStorage__objects.items():
                 print_list.append(v)
 
-        print('[%s]' % ", ".join(map(str,print_list)))
+        print('[%s]' % ", ".join(map(str, print_list)))
 
     def help_all(self):
         """ Help information for the all command """
