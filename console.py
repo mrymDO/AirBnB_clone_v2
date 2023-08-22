@@ -124,11 +124,7 @@ class HBNBCommand(cmd.Cmd):
         if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        param_dict = {
-            "updated_at": datetime.now().isoformat(),
-            "created_at": datetime.now().isoformat(),
-            "__class__": class_name
-        }
+        param_dict = {}
 
         for param in args[1:]:
             if '=' in param:
