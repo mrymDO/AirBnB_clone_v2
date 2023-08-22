@@ -107,3 +107,12 @@ class test_fileStorage(unittest.TestCase):
         from models.engine.file_storage import FileStorage
         print(type(storage))
         self.assertEqual(type(storage), FileStorage)
+    
+    def test_do_create_no_params(self):
+        pass
+    def test_do_create_params(self):
+        pass
+    def test_do_create_wrong_params(self):
+        """
+            TODO: wrong string - integre - float 
+        """
