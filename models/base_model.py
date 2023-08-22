@@ -4,8 +4,9 @@ import uuid
 from datetime import datetime
 
 
-class BaseModel:
+class BaseModel():
     """A base class for all hbnb models"""
+
     def __init__(self, *args, **kwargs):
         """Instatntiates a new model"""
         from models import storage
@@ -15,15 +16,15 @@ class BaseModel:
             self.updated_at = datetime.now()
         else:
             self.id = kwargs.get('id', str(uuid.uuid4()))
-            self.created_at = kwargs.get('created_at', datetime.now())
-            self.updated_at = kwargs.get('updated_at', datetime.now())
+            self.created_at = kwargs.get('created_at', datetime.utcnow())
+            self.updated_at = kwargs.get('updated_at', datetime.utcnow())
 
             kwargs.pop('__class__', None)
 
             self.__dict__.update(kwargs)
 
         storage.new(self)
-
+        
     def __str__(self):
         """Returns a string representation of the instance"""
         cls = (str(type(self)).split('.')[-1]).split('\'')[0]
