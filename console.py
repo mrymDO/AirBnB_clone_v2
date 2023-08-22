@@ -142,7 +142,7 @@ class HBNBCommand(cmd.Cmd):
                 param_dict[key] = value
         new_instance = HBNBCommand.classes[class_name](**param_dict)
         print(new_instance.id)
-        storage.save()
+        new_instance.save()
 
     def help_create(self):
         """ Help information for the create method """
