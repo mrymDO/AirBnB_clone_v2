@@ -115,44 +115,34 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-        """Create an object of any class with given parameters."""
+        """ Create an object of any class"""
         args = args.split()
-
         if not args:
             print("** class name missing **")
             return
-
         class_name = args[0]
-
         if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-
         param_dict = {
-                "updated_at": datetime.now().isoformat(),
-                "created_at": datetime.now().isoformat(),
-                "__class__": class_name
+            "updated_at": datetime.now().isoformat(),
+            "created_at": datetime.now().isoformat(),
+            "__class__": class_name
         }
 
         for param in args[1:]:
-            key_value = param.split('=')
+            if '=' in param:
+                try:
+                    key, value = param.split('=')
+                    if value.startswith('"') and value.endswith('"'):
+                        value = value.strip('"').replace('_', ' ')
 
-            if len(key_value) == 2:
-                key, value = key_value[0], key_value[1]
-
-                if value.startswith('"') and value.endswith('"'):
-                    value = value[1:-1].replace('_', ' ').replace('\\"', '"')
-                elif '.' in value:
-                    try:
+                    elif '.' in value:
                         value = float(value)
-                    except ValueError:
-                        pass
-                else:
-                    try:
+                    else:
                         value = int(value)
-                    except ValueError:
-                        pass
-
+                except Exception:
+                    pass
                 param_dict[key] = value
         new_instance = HBNBCommand.classes[class_name](**param_dict)
         print(new_instance.id)
