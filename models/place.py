@@ -3,6 +3,7 @@
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, Integer, Float, ForeignKey
 from sqlalchemy.orm import relationship
+from models import storage_type
 
 class Place(BaseModel, Base):
     """ A place to stay """
@@ -18,3 +19,16 @@ class Place(BaseModel, Base):
     price_by_night = Column(Integer, nullable=False, default=0)
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
+
+    if storage_type == 'db':
+        reviews = relationship('Review', backref='place',
+                              cascade='all, delete-orphan')
+    else:
+        @property
+        def reviews(self):
+            """ 
+            Getter attribute returns list of Review instances with place_id equals to the current Place.id
+            """
+            return [review for review in models.storage.all(Review).values()
+                    if review.place_id == self.id]
+
