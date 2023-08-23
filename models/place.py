@@ -3,16 +3,16 @@
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, Integer, Float, ForeignKey
 from sqlalchemy.orm import relationship
-from models import storage_type
 from models.review import Review
 from models.amenity import Amenity
-from sqlalchemy.sql.schema import Table
+from sqlalchemy.schema import Table
+from models import storage_type
 
 place_amenity = Table(
         'place_amenity',
         Base.metadata,
-        Column('place_id', String(60), ForeignKey('places.id'), primary_key=True);
-        Column('amenity_id', String(60), ForeignKiey('amenities.id'), primary_key=True)
+        Column('place_id', String(60), ForeignKey('places.id'), primary_key=True),
+        Column('amenity_id', String(60), ForeignKey('amenities.id'), primary_key=True)
 )
 
 
@@ -37,17 +37,22 @@ class Place(BaseModel, Base):
     if storage_type != "db":
         @property
         def reviews(self):
+            """ return list of review instances """
+            from models import storage
             result = []
-            for review in models.storage.all(Review).values():
+            for review in storage.all(Review).values():
                 if review.place_id == self.id:
                     result.append(review)
             return result
 
         @property
         def amenities(self):
+            """ return list of amenities instance """
+            from models import storage
             return [storage.get(Amenity, amenity_id) for amenity_id in self.amenity_ids]
 
         @amenities.setter
         def amenities(self, amenity_obj):
+            """ add Amenity.is """
             if isinstance(amenity_obj, Amenity):
                 self.amenity_ids.append(amenity_obj.id)

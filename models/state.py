@@ -4,7 +4,7 @@ from models.base_model import BaseModel, Base
 from models.city import City
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-from models import storage_type, storage:wq
+from models import storage_type
 
 
 class State(BaseModel, Base):
@@ -19,6 +19,7 @@ class State(BaseModel, Base):
     else:
         @property
         def cities(self):
+            """ returns list of City instances """
+            from models import storage
             city_instances = storage.all(City)
-            return [city for city in city_instances.values() if city.state_id == self.id]
-            
+            return [city for city in city_instances.values() if city.state_id == self.id]            
