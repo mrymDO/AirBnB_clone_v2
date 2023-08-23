@@ -48,7 +48,7 @@ class DBStorage():
         newDict = {}
         for row in rows:
             for obj in row:
-                key = "{}.{}".format(type(obj).__name__,obj.id)
+                key = "{}.{}".format(type(obj).__name__, obj.id)
                 newDict[key] = obj
         return newDict;
     def _getAll(self, cls):
