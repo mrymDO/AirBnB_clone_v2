@@ -4,6 +4,17 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, Integer, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from models import storage_type
+from models.review import Review
+from models.amenity import Amenity
+from sqlalchemy.sql.schema import Table
+
+place_amenity = Table(
+        'place_amenity',
+        Base.metadata,
+        Column('place_id', String(60), ForeignKey('places.id'), primary_key=True);
+        Column('amenity_id', String(60), ForeignKiey('amenities.id'), primary_key=True)
+)
+
 
 class Place(BaseModel, Base):
     """ A place to stay """
@@ -20,15 +31,23 @@ class Place(BaseModel, Base):
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
 
-    if storage_type == 'db':
-        reviews = relationship('Review', backref='place',
-                              cascade='all, delete-orphan')
-    else:
+    reviews = relationship('Review', backref='place', cascade='delete')
+    amenities = relationship('Amenity', secondary=place_amenity, back_populates='place_amenities')
+
+    if storage_type != "db":
         @property
         def reviews(self):
-            """ 
-            Getter attribute returns list of Review instances with place_id equals to the current Place.id
-            """
-            return [review for review in models.storage.all(Review).values()
-                    if review.place_id == self.id]
+            result = []
+            for review in models.storage.all(Review).values():
+                if review.place_id == self.id:
+                    result.append(review)
+            return result
 
+        @property
+        def amenities(self):
+            return [storage.get(Amenity, amenity_id) for amenity_id in self.amenity_ids]
+
+        @amenities.setter
+        def amenities(self, amenity_obj):
+            if isinstance(amenity_obj, Amenity):
+                self.amenity_ids.append(amenity_obj.id)
