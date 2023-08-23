@@ -26,6 +26,8 @@ class BaseModel():
             self.id = kwargs.get('id', str(uuid.uuid4()))
 
             for key, value in kwargs.items():
+                if key == "__class__":
+                    continue
                 setattr(self, key, value)
 
             if 'created_at' in kwargs:
@@ -43,9 +45,9 @@ class BaseModel():
     def __str__(self):
         """Returns a string representation of the instance"""
         cls = (str(type(self)).split('.')[-1]).split('\'')[0]
-        if "_sa_instance_state" in self.__dict__:
-            del self.__dict__["_sa_instance_state"]
-        return '[{}] ({}) {}'.format(cls, self.id, self.__dict__)
+        cp_dict = self.__dict__.copy()
+        cp_dict.pop("_sa_instance_state", None)
+        return '[{}] ({}) {}'.format(cls, self.id, cp_dict)
 
     def save(self):
         """Updates updated_at with current time when instance is changed"""
