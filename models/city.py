@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """ City Module for HBNB project """
 from models.base_model import BaseModel, Base
-from sqlachemy import Column, String, ForeignKey
+from sqlalchemy import Column, String, ForeignKey
 
 
 class City(BaseModel, Base):
