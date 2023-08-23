@@ -15,7 +15,7 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 
-classes = [User, Place, State, City, Amenity, Review]
+classes = [State, City]
 
 
 class DBStorage():
@@ -41,14 +41,15 @@ class DBStorage():
         else:
             data = []
             for classObj in classes:
-              data.append(self._getAll(classObj))
+                data.append(self._getAll(classObj))
         dictData = self._toDict(data)
         return dictData
     def _toDict(self, rows):
         newDict = {}
         for row in rows:
-            key = "{}.{}".format(row.__class__.name,row.id)
-            newDict[key] = row
+            for obj in row:
+                key = "{}.{}".format(type(obj).__name__,obj.id)
+                newDict[key] = obj
         return newDict;
     def _getAll(self, cls):
         data = self.__session.query(cls).all()
