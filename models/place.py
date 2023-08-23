@@ -10,7 +10,7 @@ from models import storage_type
 association_table = Table("place_amenity", Base.metadata,
                           Column("place_id", String(60),
                                  ForeignKey("places.id"),
-                                 rimary_key=True,
+                                 primary_key=True,
                                  nullable=False),
                           Column("amenity_id", String(60),
                                  ForeignKey("amenities.id"),
