@@ -3,7 +3,11 @@
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
+<<<<<<< HEAD
 
+=======
+from models import storage_type
+>>>>>>> 7a7d54a4d52abf8a95f5b213822b1a0eef3d4f67
 
 class User(BaseModel, Base):
     """This class defines a user by various attributes"""
@@ -13,5 +17,9 @@ class User(BaseModel, Base):
     password = Column(String(128), nullable=False)
     first_name = Column(String(128), nullable=True)
     last_name = Column(String(128), nullable=True)
+<<<<<<< HEAD
     places = relationship('Place', backref='user',
                               cascade='all, delete, delete-orphan')
+=======
+    places = relationship('Place', backref='user', cascade='delete')
+>>>>>>> 7a7d54a4d52abf8a95f5b213822b1a0eef3d4f67
