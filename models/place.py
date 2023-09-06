@@ -1,20 +1,21 @@
 #!/usr/bin/python3
 """ Place Module for HBNB project """
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String, Integer, Float, ForeignKey
-from sqlalchemy.orm import relationship
-from models.review import Review
 from models.amenity import Amenity
-from sqlalchemy.schema import Table
+from models.review import Review
+from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
+from sqlalchemy.orm import relationship
 from models import storage_type
 
-if storage_type =="db":
-    place_amenity = Table(
-            'place_amenity',
-            Base.metadata,
-            Column('place_id', String(60), ForeignKey('places.id'), primary_key=True),
-            Column('amenity_id', String(60), ForeignKey('amenities.id'), primary_key=True)
-)
+association_table = Table("place_amenity", Base.metadata,
+                          Column("place_id", String(60),
+                                 ForeignKey("places.id"),
+                                 primary_key=True,
+                                 nullable=False),
+                          Column("amenity_id", String(60),
+                                 ForeignKey("amenities.id"),
+                                 primary_key=True,
+                                 nullable=False))
 
 
 class Place(BaseModel, Base):
@@ -33,31 +34,30 @@ class Place(BaseModel, Base):
     longitude = Column(Float, nullable=True)
 
     reviews = relationship('Review', backref='place', cascade='delete')
+    amenities = relationship("Amenity", secondary="place_amenity", viewonly=False)
+    amenity_ids = []
 
     if storage_type != "db":
-        amenities = relationship('Amenity', secondary=place_amenity, back_populates='places')
-
-    else:
-        amenity_ids = []
-
         @property
         def reviews(self):
             """ return list of review instances """
-            from models import storage
             result = []
-            for review in storage.all(Review).values():
+            for review in models.storage.all(Review).values():
                 if review.place_id == self.id:
                     result.append(review)
             return result
 
         @property
         def amenities(self):
-            """ return list of amenities instance """
-            from models import storage
-            return [storage.get(Amenity, amenity_id) for amenity_id in self.amenity_ids]
+            """ getter """
+            amenity_list = []
+            for amenity in list(models.storage.all(Amenity).values()):
+                if amenity.id in self.amenity_ids: 
+                    amenity_list.append(amenity)
+            return amenity_list
 
         @amenities.setter
-        def amenities(self, amenity_obj):
-            """ add Amenity.is """
-            if isinstance(amenity_obj, Amenity):
-                self.amenity_ids.append(amenity_obj.id)
+        def amenities(self, value):
+            """ setter """
+            if type(value) == Amenity:
+                self.amenity_ids.append(value.id)
