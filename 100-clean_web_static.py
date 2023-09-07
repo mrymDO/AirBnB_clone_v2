@@ -94,7 +94,8 @@ def do_clean(number=0):
     # Delete on remote servers
     remote_folder = "/data/web_static/releases/"
     for host in env.hosts:
-        archives = run("ls -t {} | grep 'web_static_'".format(remote_folder))
-        archives = archives.split()
-        for archive in archives[:-number]:
-            run("rm -f {}{}".format(remote_folder, archive))
+        with cd(remote_folder):
+            archives = run("ls -t | grep 'web_static_'", quiet=True).split()
+
+            for archive in archives[:-number]:
+                run("rm -f {}".format(join(remote_folder, archive)))
