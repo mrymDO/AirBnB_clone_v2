@@ -42,7 +42,6 @@ def do_deploy(archive_path):
         # Create a new symbolic link pointing to the new version
         run("ln -s {} /data/web_static/current".format(folder_path))
 
-
         print('deployment done')
 
         # Check if the code should run locally
@@ -56,10 +55,8 @@ def do_deploy(archive_path):
             local("rm -rf /data/web_static/current")
             local("ln -s {} /data/web_static/current".format(folder_path))
 
-
         return True
 
     except Exception as e:
         print("Error during deployment:", str(e))
         return False
-
