@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 """ Fabric script to distribute an archive to web servers """
 
-from fabric.api import env, run, put, sudo
+from fabric.api import env, run, put, sudo, local
 from os.path import exists
+import os
 
 env.hosts = ['52.86.193.42', '52.86.161.66']
 
@@ -41,7 +42,21 @@ def do_deploy(archive_path):
         # Create a new symbolic link pointing to the new version
         run("ln -s {} /data/web_static/current".format(folder_path))
 
+
         print('deployment done')
+
+        # Check if the code should run locally
+        run_locally = os.getenv("run_locally", None)
+        if run_locally is not None:
+            local("mkdir -p {}".format(folder_path))
+            local("tar -xzf {} -C {}".format(archive_path, folder_path))
+            local("rm -rf /tmp/{}".format(file_name))
+            local("mv {}/web_static/* {}".format(folder_path, folder_path))
+            local("rm -rf {}/web_static".format(folder_path))
+            local("rm -rf /data/web_static/current")
+            local("ln -s {} /data/web_static/current".format(folder_path))
+
+
         return True
 
     except Exception as e:
