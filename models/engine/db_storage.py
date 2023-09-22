@@ -34,7 +34,7 @@ class DBStorage():
 
         if env == "test":
             Base.metadata.drop_all(self.__engine)
-    
+
     def all(self, cls=None):
         if cls:
             data = self._getAll(cls)
@@ -44,19 +44,20 @@ class DBStorage():
                 data.append(self._getAll(classObj))
         dictData = self._toDict(data)
         return dictData
+
     def _toDict(self, rows):
         newDict = {}
         for row in rows:
             for obj in row:
                 key = "{}.{}".format(type(obj).__name__, obj.id)
                 newDict[key] = obj
-        return newDict;
+        return newDict
+
     def _getAll(self, cls):
         data = self.__session.query(cls).all()
         return data
 
-
-    def new(self,obj):
+    def new(self, obj):
         """ add new object to current db """
         if obj:
             self.__session.add(obj)
@@ -64,7 +65,6 @@ class DBStorage():
     def save(self):
         """ Commit all changes of current db """
         self.__session.commit()
-
 
     def delete(self, obj=None):
         """ Delete from current db """
@@ -78,3 +78,7 @@ class DBStorage():
                 bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(session_factory)
         self.__session = Session()
+
+    def close(self):
+        """Closes the SQLAlchemy session."""
+        self.__session.remove()
