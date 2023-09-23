@@ -5,6 +5,7 @@
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.ext.declarative import declarative_base
 from os import getenv
 
 from models.base_model import Base
@@ -15,7 +16,6 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 
-classes = [State, City, User, Place, Review, Amenity]
 
 
 class DBStorage():
@@ -36,26 +36,23 @@ class DBStorage():
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        if cls:
-            data = self._getAll(cls)
+        """ returns dict of models """
+        results_dict = {}
+        if cls is None:
+            models = [User, State, City, Amenity, Place, Review]
+            results_list = []
+            for model in models:
+                query_list = self.__session.query(model).all()
+                results_list = results_list + query_list
         else:
-            data = []
-            for classObj in classes:
-                data.append(self._getAll(classObj))
-        dictData = self._toDict(data)
-        return dictData
+            if type(cls) == str:
+                cls = eval(cls)
+            results_list = self.__session.query(cls).all()
 
-    def _toDict(self, rows):
-        newDict = {}
-        for row in rows:
-            for obj in row:
-                key = "{}.{}".format(type(obj).__name__, obj.id)
-                newDict[key] = obj
-        return newDict
+        for result in results_list:
+            results_dict[f"{type(result).__name__}.{result.id}"] = result
 
-    def _getAll(self, cls):
-        data = self.__session.query(cls).all()
-        return data
+        return results_dict
 
     def new(self, obj):
         """ add new object to current db """
@@ -81,4 +78,4 @@ class DBStorage():
 
     def close(self):
         """Closes the SQLAlchemy session."""
-        self.__session.remove()
+        self.__session.close()
