@@ -16,7 +16,7 @@ class State(BaseModel, Base):
     name = Column(String(128), nullable=False)
 
     if storage_type == 'db':
-        
+
         cities = relationship('City', back_populates='state',
                               cascade='all, delete, save-update')
     else:
@@ -26,4 +26,5 @@ class State(BaseModel, Base):
             from models import storage
             from models.city import City
             city_instances = storage.all(City)
-            return [city for city in city_instances.values() if city.state_id == self.id]            
+            return [city for city in city_instances.values()
+                    if city.state_id == self.id]
