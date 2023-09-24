@@ -16,12 +16,8 @@ def teardown(exception):
 @app.route("/hbnb_filters", strict_slashes=False)
 def hbnb_filters():
     """ display hbnb_filters """
-    state_objects = storage.all('State').values()
-    states = sorted(state_objects, key=lambda state: state.name)
-
-    amenities_objects = storage.all('Amenity').values()
-    amenities = sorted(amenities_objects, key=lambda amenity: amenity.name)
-
+    states = storage.all('State')
+    amenities = storage.all('Amenity')
     return render_template('10-hbnb_filters.html', states=states,
                            amenities=amenities)
 
