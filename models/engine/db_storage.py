@@ -17,7 +17,6 @@ from models.amenity import Amenity
 from models.review import Review
 
 
-
 class DBStorage():
     """db storage class"""
     __engine = None
